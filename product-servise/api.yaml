@@ -1,0 +1,75 @@
+---
+swagger: "2.0"
+info:
+  description: This is API for my-shop.
+  version: 1.0.0
+  title: Simple Inventory API
+  license:
+    name: Apache 2.0
+    url: http://www.apache.org/licenses/LICENSE-2.0.html
+host: virtserver.swaggerhub.com
+basePath: /Dezreng/Egor/1.0.0
+tags:
+- name: product-service
+  description: Secured Admin-only calls
+schemes:
+- https
+paths:
+  /products:
+    get:
+      tags:
+      - product-service
+      summary: get all products
+      description: Returns a complete list of available products
+      operationId: getAllProducts
+      produces:
+      - application/json
+      parameters: []
+      responses:
+        "200":
+          description: found full list of products
+          schema:
+            type: array
+            items:
+              $ref: '#/definitions/product'
+  /products/{productId}:
+    get:
+      tags:
+      - product-service
+      summary: get products by ID
+      description: finds the desired product for a given ID
+      operationId: getProductById
+      parameters:
+      - name: productId
+        in: path
+        required: true
+        type: string
+      responses:
+        "200":
+          description: found product by ID
+          schema:
+            type: array
+            items:
+              $ref: '#/definitions/product'
+        "404":
+          description: Wrong id or not found !
+definitions:
+  product:
+    type: object
+    properties:
+      count:
+        type: integer
+      description:
+        type: string
+      id:
+        type: string
+      price:
+        type: integer
+      title:
+        type: string
+    example:
+      count: 4
+      description: Short Product Description1
+      id: 7567ec4b-b10c-48c5-9345-fc73c48a80aa
+      price: 2.4
+      title: ProductOne
