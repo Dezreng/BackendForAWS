@@ -1,4 +1,4 @@
-import schema from './schema';
+import schemas from './schemas';
 import { handlerPath } from '@libs/handlerResolver';
 
 export default {
@@ -9,8 +9,8 @@ export default {
         method: 'post',
         path: 'products',
         request: {
-          schema: {
-            'application/json': schema
+          schemas: {
+            'application/json': schemas
           }
         }
       }

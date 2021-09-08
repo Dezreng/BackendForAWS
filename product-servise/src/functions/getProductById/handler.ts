@@ -3,22 +3,26 @@ import 'source-map-support/register';
 import type { ValidatedEventAPIGatewayProxyEvent } from '@libs/apiGateway';
 import { formatJSONResponse } from '../../libs/apiGateway';
 import { middyfy } from '../../libs/lambda';
+import { Client, dbOptions } from '@libs/connect';
 
 export const getProductsById: ValidatedEventAPIGatewayProxyEvent<typeof Object> = async (event) => {
+	const client = new Client(dbOptions);
+	await client.connect();
+	console.log('Body', event);
+	console.log('Argument Path Parameters', event.pathParameters );
+	console.log('Body', event.body );
+	
 	try {
-		const mock = require('../../libs/db/mock.json');
-		const product = await mock.body.filter(element => {
-			if (element.id === event.pathParameters.productId){
-				return element;
-			}
-		});
-		if (product.length < 1) {
-			return formatJSONResponse({ message: "Not Found Product" }, 404);
-		} else {
-			return formatJSONResponse(product, 200);
-		}
+		const result = await client.query(`select id, count, price, title, description from products p left join stocks s on p.id = s.product_id where id in ('${event.pathParameters.productId}')`);
+		return formatJSONResponse(result.rows[0], 200);
 	} catch(err) {
-		return formatJSONResponse({ messege: err }, 404);
+		if ( err.name === "error" ){
+			return formatJSONResponse({ messege: err }, 404);
+		} else {
+			return formatJSONResponse({ messege: "Error" }, 500);
+		}
+	} finally {
+		await client.end();
 	}
 }
 

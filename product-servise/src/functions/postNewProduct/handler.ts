@@ -3,9 +3,9 @@ import { dbOptions, Client } from '@libs/connect';
 import type { ValidatedEventAPIGatewayProxyEvent } from '@libs/apiGateway';
 import { formatJSONResponse } from '../../libs/apiGateway';
 import { middyfy } from '../../libs/lambda';
-import schema from './schema';
+import schemas from './schemas';
 
-export const postNewProduct: ValidatedEventAPIGatewayProxyEvent<typeof schema> = async (event) => {
+export const postNewProduct: ValidatedEventAPIGatewayProxyEvent<typeof schemas> = async (event) => {
 	const client = new Client(dbOptions);
 	await client.connect();
 	console.log('Body', event.body.product);
@@ -28,7 +28,8 @@ export const postNewProduct: ValidatedEventAPIGatewayProxyEvent<typeof schema> =
 
 		return formatJSONResponse({newProduct: result.rows[0]}, 201);
 	} catch(err) {
-		if (err.newProduct.code === 42703) {
+		await client.query('ROLLBACK')
+		if (err.name === 'SyntaxError' || err.code === '42703') {
 			return formatJSONResponse({ message: "Parameters set incorrectly"}, 400);
 		} else {
 			return formatJSONResponse({ message: "Error"}, 500);
