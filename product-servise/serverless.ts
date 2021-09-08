@@ -2,17 +2,19 @@ import type { AWS } from '@serverless/typescript';
 
 import getProductsList from '@functions/getProductsList';
 import getProductById from '@functions/getProductById';
+import postNewProduct from '@functions/postNewProduct';
 
 const serverlessConfiguration: AWS = {
   service: 'product-servise',
   frameworkVersion: '2',
+	useDotenv: true,
   custom: {
     webpack: {
       webpackConfig: './webpack.config.js',
       includeModules: true,
     },
   },
-  plugins: ['serverless-webpack'],
+  plugins: ['serverless-webpack', 'serverless-dotenv-plugin'],
   provider: {
     name: 'aws',
     runtime: 'nodejs14.x',
@@ -27,7 +29,7 @@ const serverlessConfiguration: AWS = {
     lambdaHashingVersion: '20201221',
   },
   // import the function via paths
-  functions: { getProductsList, getProductById },
+  functions: { getProductsList, getProductById, postNewProduct },
 };
 
 module.exports = serverlessConfiguration;
