@@ -28,21 +28,49 @@ const serverlessConfiguration: AWS = {
   		{
     		Effect: 'Allow',
     		Action: ['s3:ListBucket'],
-    		Resource: {
-      		"Ref": "arn:aws:s3:::task-5-egor",
-    		},
+    		Resource: ["arn:aws:s3:::task-egor-number-five"],
   		},
 			{
     		Effect: 'Allow',
-    		Action: ['s3:'],
-    		Resource: {
-      		"Ref": "arn:aws:s3:::task-5-egor/",
-    		},
+    		Action: ['s3:*'],
+    		Resource: ["arn:aws:s3:::task-egor-number-five/*"],
   		}
 ]
   },
   // import the function via paths
   functions: { importProductsFile },
+	resources: {
+    Resources: {
+      ImportFileS3Bucket: {
+        Type: 'AWS::S3::Bucket',
+        Properties: {
+          BucketName: 'task-egor-number-five',
+          PublicAccessBlockConfiguration: {
+            BlockPublicAcls: true,
+            IgnorePublicAcls: true,
+            BlockPublicPolicy: true,
+            RestrictPublicBuckets: true,
+          },
+          CorsConfiguration: {
+            CorsRules: [
+              {
+                AllowedOrigins: ['*'],
+                AllowedHeaders: ['*'],
+                AllowedMethods: ['PUT'],
+              },
+            ],
+          },
+        },
+      },
+    },
+    Outputs: {
+      ImportFileBucketOutput: {
+        Value: {
+          Ref: 'ImportFileS3Bucket',
+        },
+      },
+    },
+  },
 };
 
 module.exports = serverlessConfiguration;
