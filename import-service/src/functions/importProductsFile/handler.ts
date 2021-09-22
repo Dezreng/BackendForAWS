@@ -1,15 +1,17 @@
 import 'source-map-support/register';
 import { S3 } from 'aws-sdk';
 
-import { formatJSONResponse } from '@libs/apiGateway';
-import { middyfy } from '@libs/lambda';
+import { formatJSONResponse } from '../../libs/apiGateway';
+import { middyfy } from '../../libs/lambda';
 
 const BUCKET = 'task-egor-number-five'
 
 const importProductsFile = async (event) => {
 	try {
-		const s3 = new S3({region: "eu-west-1"});
 		const { name } = event.queryStringParameters;
+
+		if (name && name.lenght !== 0) {
+		const s3 = new S3({region: "eu-west-1"});
 
 		const params = {
 			Bucket: BUCKET,
@@ -20,15 +22,14 @@ const importProductsFile = async (event) => {
 
 		const singURL = await s3.getSignedUrlPromise('putObject', params);
 
-		if (!singURL) {
-			return formatJSONResponse({ message: `Error` }, 400);
-		}
-
 		return formatJSONResponse( singURL, 200);
-
+		} else {
+			return formatJSONResponse( { message: "Bad request" }, 400);
+		}
 	} catch(err) {
-		return formatJSONResponse({ message: err }, 500);
+		return formatJSONResponse({ message: "Internal server error" }, 500);
 	}
 }
 
+export { importProductsFile }; 
 export const main = middyfy(importProductsFile);
