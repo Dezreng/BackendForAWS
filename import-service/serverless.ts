@@ -25,6 +25,7 @@ const serverlessConfiguration: AWS = {
     },
     environment: {
       AWS_NODEJS_CONNECTION_REUSE_ENABLED: '1',
+			SQS_URL: "SQSQueue"
     },
     lambdaHashingVersion: '20201221',
 		iamRoleStatements: [
@@ -37,10 +38,14 @@ const serverlessConfiguration: AWS = {
     		Effect: 'Allow',
     		Action: ['s3:*'],
     		Resource: ["arn:aws:s3:::task-egor-number-five/*"],
+  		},
+			{
+    		Effect: 'Allow',
+    		Action: ['sqs:*'],
+    		Resource: ["SQSQueue", "Arn"],
   		}
-]
+		]
   },
-  // import the function via paths
   functions: { importProductsFile, importFileParser },
 	resources: {
     Resources: {
@@ -65,6 +70,12 @@ const serverlessConfiguration: AWS = {
           },
         },
       },
+			SQSQueue: {
+				Type: "AWS::SQS::Queue",
+				Properties: {
+					QueueName: "catalogItemsQueue"
+				}
+			}
     },
     Outputs: {
       ImportFileBucketOutput: {
@@ -72,6 +83,14 @@ const serverlessConfiguration: AWS = {
           Ref: 'ImportFileS3Bucket',
         },
       },
+			SQSQueueArn: {
+				Value: ["SQSQueue", "Arn"]
+			},
+			SQSQueue: {
+				Value: {
+					Ref: "SQSQueue"
+				}
+			}
     },
   },
 };
