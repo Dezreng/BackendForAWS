@@ -1,9 +1,9 @@
 import 'source-map-support/register';
 
-import type { ValidatedEventAPIGatewayProxyEvent } from '@libs/apiGateway';
+import type { ValidatedEventAPIGatewayProxyEvent } from '../../libs/apiGateway';
 import { formatJSONResponse } from '../../libs/apiGateway';
 import { middyfy } from '../../libs/lambda';
-import { dbOptions, Client } from '@libs/connect';
+import { dbOptions, Client } from '../../libs/connect';
 
 export const getProductsList: ValidatedEventAPIGatewayProxyEvent<typeof Object> = async (event) => {
 	const client = new Client(dbOptions);

@@ -1,6 +1,6 @@
 import 'source-map-support/register';
 import { SNS } from 'aws-sdk';
-import { dbOptions, Client } from '@libs/connect';
+import { dbOptions, Client } from '../../libs/connect';
 import { formatJSONResponse } from '../../libs/apiGateway';
 import { middyfy } from '../../libs/lambda';
 

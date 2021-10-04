@@ -1,5 +1,5 @@
 import 'source-map-support/register';
-import { dbOptions, Client } from '@libs/connect';
+import { dbOptions, Client } from '../../libs/connect';
 import type { ValidatedEventAPIGatewayProxyEvent } from '@libs/apiGateway';
 import { formatJSONResponse } from '../../libs/apiGateway';
 import { middyfy } from '../../libs/lambda';
