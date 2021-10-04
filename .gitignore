@@ -1,8 +1,14 @@
 product-servise/node_modules
+import-service/node_modules
 
 product-servise/.serverless
+import-service/.serverless
 
 product-servise/coverage
+import-service/coverage
+
+import-service/package-lock.json
+product-servise/package-lock.json
 
 .DS_Store
 product-servise/.env
