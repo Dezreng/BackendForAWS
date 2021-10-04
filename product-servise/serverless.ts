@@ -3,6 +3,7 @@ import type { AWS } from '@serverless/typescript';
 import getProductsList from '@functions/getProductsList';
 import getProductById from '@functions/getProductById';
 import postNewProduct from '@functions/postNewProduct';
+import catalogBatchProcess from '@functions/catalogBatchProcess';
 
 const serverlessConfiguration: AWS = {
   service: 'product-servise',
@@ -25,7 +26,9 @@ const serverlessConfiguration: AWS = {
     },
     environment: {
       AWS_NODEJS_CONNECTION_REUSE_ENABLED: '1',
-			SNS_ARN: "SNSTopic",
+			SNS_ARN: {
+				Ref: "SNSTopic"
+			},
     },
     lambdaHashingVersion: '20201221',
 			iamRoleStatements: [
@@ -37,21 +40,20 @@ const serverlessConfiguration: AWS = {
 			{
     		Effect: 'Allow',
     		Action: ['sns:*'],
-    		Resource: "SNSTopic",
+    		Resource: {
+					Ref: "SNSTopic"
+				},
   		}
 		]
   },
   // import the function via paths
-  functions: { getProductsList, getProductById, postNewProduct },
+  functions: { getProductsList, getProductById, postNewProduct, catalogBatchProcess },
 	resources: {
     Resources: {
       SNSTopic: {
-        Type: 'AWS::S3::Bucket',
+        Type: 'AWS::SNS::Topic',
         Properties: {
-          BucketName: 'AWS::SNS::Topic',
-          Properties: {
-						TopicName: "createProductTopic"
-					}
+					TopicName: "createProductTopic"
         },
       },
 			SNSSubscription: {
@@ -63,7 +65,7 @@ const serverlessConfiguration: AWS = {
 						Ref: "SNSTopic"
 					},
 					FilterPolicy: {
-						price: "lessThousand"
+						price: [{numeric: ['<', 1000]}]
 					}
 				}
 			},
@@ -76,11 +78,11 @@ const serverlessConfiguration: AWS = {
 						Ref: "SNSTopic"
 					},
 					FilterPolicy: {
-						price: "moreThousand"
+						 price: [{numeric: ['>=', 1000]}]
 					}
 				}
 			}
-    },
+    }
   },
 };
 

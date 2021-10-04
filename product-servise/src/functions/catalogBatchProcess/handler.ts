@@ -25,7 +25,7 @@ export const catalogBatchProcess = async (event) => {
     const addReqToStockDB =  `insert into stocks (product_id, count ) values ('${primaryKeyID}', ${count})`;
     await client.query(addReqToStockDB);
 
-		await client.query(`select id, count, price, title, description from products p left join stocks s on p.id = s.product_id where id in ('${primaryKeyID}')`);
+		const res = await client.query(`select id, count, price, title, description from products p left join stocks s on p.id = s.product_id where id in ('${primaryKeyID}')`);
 
 		await client.query('COMMIT');
 
@@ -40,8 +40,8 @@ export const catalogBatchProcess = async (event) => {
                 TopicArn: process.env.SNS_ARN,
                 MessageAttributes: {
                     price: {
-                        DataType: 'String',
-                        StringValue: filteredPrice,
+                        DataType: 'Number',
+                        StringValue: `${res.rows[0].price}`,
                     }
                 }
             };

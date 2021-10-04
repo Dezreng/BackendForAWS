@@ -25,7 +25,9 @@ const serverlessConfiguration: AWS = {
     },
     environment: {
       AWS_NODEJS_CONNECTION_REUSE_ENABLED: '1',
-			SQS_URL: "SQSQueue"
+			SQS_URL: {
+				Ref: "SQSQueue"
+			},
     },
     lambdaHashingVersion: '20201221',
 		iamRoleStatements: [
@@ -42,7 +44,9 @@ const serverlessConfiguration: AWS = {
 			{
     		Effect: 'Allow',
     		Action: ['sqs:*'],
-    		Resource: ["SQSQueue", "Arn"],
+    		Resource: {
+					'Fn::GetAtt': ["SQSQueue", "Arn"]
+				},
   		}
 		]
   },
@@ -84,7 +88,9 @@ const serverlessConfiguration: AWS = {
         },
       },
 			SQSQueueArn: {
-				Value: ["SQSQueue", "Arn"]
+				Value: {
+					'Fn::GetAtt': ["SQSQueue", "Arn"],
+				}
 			},
 			SQSQueue: {
 				Value: {
