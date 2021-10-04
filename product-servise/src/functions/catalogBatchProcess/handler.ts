@@ -17,6 +17,10 @@ export const catalogBatchProcess = async (event) => {
 		for (let item of items) {
 		const {count, price, title, description}  = JSON.parse(item);
 
+		if (!price || !title || !description || !count) {
+      throw new Error(`Product data is invalid`);
+    };
+
 		await client.query('BEGIN')
 
 		const resFromProductDB = await client.query(`insert into products (title, description, price) values ('${title}', '${description}', ${price}) returning id`)
@@ -31,9 +35,6 @@ export const catalogBatchProcess = async (event) => {
 
 		const sns = new SNS({region: 'eu-west-1'});
 
-		const filteredPrice = (Number(price) > 999) ? 'moreThousand' : 'lessThousand';
-
-		console.log(`RESULT ${filteredPrice}`);
 		const params = {
                 Subject: 'Products have been created in your DB',
                 Message: `${JSON.stringify(item)}`,
@@ -51,7 +52,7 @@ export const catalogBatchProcess = async (event) => {
 		return formatJSONResponse({newProduct: result}, 200);
 	} catch(err) {
 		await client.query('ROLLBACK')
-		if (err.name === 'SyntaxError' || err.code === '42703') {
+		if (err.name === 'SyntaxError' || err.code === '42703' || err.message === 'Product data is invalid') {
 			return formatJSONResponse({ message: "Parameters set incorrectly"}, 400);
 		} else {
 			return formatJSONResponse({ message: "Error"}, 500);

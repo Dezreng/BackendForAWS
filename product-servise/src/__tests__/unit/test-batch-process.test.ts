@@ -30,7 +30,7 @@ jest.mock('pg', () => {
 });
 
 describe('Unit test for app batch process', function () {
-    it('to be return the "succsess" if all OK', async () => {
+    it('to be return OK', async () => {
         const event: APIGatewayProxyEvent = {
 					price: 100,
           title: 'Test SNS',
@@ -54,12 +54,11 @@ describe('Unit test for app batch process', function () {
 				AWSMock.restore();
     });
 
-		it('to be return the "status code 400" and message "Product data is invalid" if data is not valid', async () => {
+		it('to be return the "status code 400" and message "Parameters set incorrectly" if data is not valid', async () => {
         const event: APIGatewayProxyEvent = {
-					price: 'fgfd',
           title: 'Test SNS',
           description: 'Test SNS',
-          count: '12' 
+          count: 'fdgfdg' 
 				} as any
 
 				// @ts-ignore: Unreachable code error
@@ -70,8 +69,32 @@ describe('Unit test for app batch process', function () {
 
 				// @ts-ignore: Unreachable code error
         expect(result.statusCode).toBe(400);
-        expect(message).toBe('Error');
+        expect(message).toBe('Parameters set incorrectly');
 				
         AWSMock.restore();
     });
+
+		it('to be return the "status code 500" and message "Error"',
+      async () => {
+         const event: APIGatewayProxyEvent = {
+					price: 100,
+          title: 'Test SNS',
+          description: 'Test SNS',
+          count: 5
+				} as any
+
+       AWSMock.setSDKInstance(AWS);
+       AWSMock.mock('SNS', 'publish', (_params, callback) => {
+           callback(new Error('Wrong'));
+           });
+
+			 // @ts-ignore: Unreachable code error
+       const result = await catalogBatchProcess(setMockEvent(event));
+			 // @ts-ignore: Unreachable code error
+       const { message } = JSON.parse(result.body);
+			 // @ts-ignore: Unreachable code error
+       expect(result.statusCode).toBe(500); 
+       expect(message).toBe('Error');
+       AWSMock.restore();
+     });
 });
