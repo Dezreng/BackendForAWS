@@ -86,6 +86,7 @@ const serverlessConfiguration: AWS = {
           ResponseParameters: {
             'gatewayresponse.header.Access-Control-Allow-Origin': "'*'",
             'gatewayresponse.header.Access-Control-Allow-Headers': "'*'",
+						'gatewayresponse.header.Access-Control-Allow-Credentials': "'true'"
           },
           ResponseType: 'DEFAULT_4XX',
           RestApiId: {
@@ -106,6 +107,19 @@ const serverlessConfiguration: AWS = {
           },
         },
       },
+			GatewayResponseAccessDenied: {
+				Type: 'AWS::ApiGateway::GatewayResponse',
+      	Properties: {
+        	ResponseParameters: {
+						'gatewayresponse.header.Access-Control-Allow-Origin': "'*'",
+          	'gatewayresponse.header.Access-Control-Allow-Headers': "'*'",
+					},
+					ResponseType: 'ACCESS_DENIED',
+        	RestApiId: {
+						Ref: 'ApiGatewayRestApi'
+					}
+				}
+			}
     },
     Outputs: {
       ImportFileBucketOutput: {
