@@ -1,17 +1,22 @@
 product-servise/node_modules
 import-service/node_modules
+authorization-service/node_modules
 
 product-servise/.serverless
 import-service/.serverless
+authorization-service/.serverless
 
 product-servise/coverage
 import-service/coverage
+authorization-service/coverage
 
 import-service/package-lock.json
 product-servise/package-lock.json
+authorization-service/package-lock.json
 
 .DS_Store
 product-servise/.env
+authorization-service/.env
 .env.local
 .env.development.local
 .env.test.local
