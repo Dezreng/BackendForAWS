@@ -1,6 +1,7 @@
 import 'source-map-support/register';
 
 import { middyfy } from '@libs/lambda';
+import { APIGatewayAuthorizerCallback, APIGatewayTokenAuthorizerEvent } from 'aws-lambda';
 
 const generatePolicy = (principalId, resource, effect) => ({
     principalId,
@@ -17,7 +18,7 @@ const generatePolicy = (principalId, resource, effect) => ({
 });
 
 
-const basicAuthorizer = async (event, _context, callback) => {
+const basicAuthorizer = async (event: APIGatewayTokenAuthorizerEvent, _context, callback: APIGatewayAuthorizerCallback) => {
 	console.log("**********Get logs of event: ", event);
 
     if (event.type !== 'TOKEN') {
@@ -29,6 +30,9 @@ const basicAuthorizer = async (event, _context, callback) => {
         const buff = Buffer.from(encoded, 'base64');
         const [ username, password ] = buff.toString('utf-8').split(':');
         const storedPassword = process.env[username];
+
+				if (!username || !password) callback('Unauthorized');
+
         const effect = !storedPassword || storedPassword !== password ? 'Deny' : 'Allow';
         const policy = generatePolicy(encoded, event.methodArn, effect);
         callback(null, policy);

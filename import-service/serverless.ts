@@ -80,27 +80,27 @@ const serverlessConfiguration: AWS = {
 					QueueName: "catalogItemsQueue"
 				}
 			},
-			GatewayResponseDefault4XX: {
+			GatewayResponseAccessDenied: {
         Type: 'AWS::ApiGateway::GatewayResponse',
         Properties: {
           ResponseParameters: {
             'gatewayresponse.header.Access-Control-Allow-Origin': "'*'",
             'gatewayresponse.header.Access-Control-Allow-Headers': "'*'",
           },
-          ResponseType: 'DEFAULT_4XX',
+          ResponseType: 'ACCESS_DENIED',
           RestApiId: {
             Ref: 'ApiGatewayRestApi',
           },
         },
       },
-      GatewayResponseDefault5XX: {
+      GatewayResponseUnauthorized: {
         Type: 'AWS::ApiGateway::GatewayResponse',
         Properties: {
           ResponseParameters: {
             'gatewayresponse.header.Access-Control-Allow-Origin': "'*'",
             'gatewayresponse.header.Access-Control-Allow-Headers': "'*'",
           },
-          ResponseType: 'DEFAULT_5XX',
+          ResponseType: 'UNAUTHORIZED',
           RestApiId: {
             Ref: 'ApiGatewayRestApi',
           },
