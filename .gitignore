@@ -14,6 +14,11 @@ import-service/package-lock.json
 product-servise/package-lock.json
 authorization-service/package-lock.json
 
+bff-service/.env
+bff-service/package-lock.json
+bff-service/node_modules
+bff-service/dist
+
 .DS_Store
 product-servise/.env
 authorization-service/.env
