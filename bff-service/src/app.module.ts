@@ -5,7 +5,7 @@ import { ErrorHandlerController } from './path-handler/path-handler.controller';
 import { CartController } from './cart/cart.controller';
 
 @Module({
-  imports: [CacheModule.register({ ttl: 10 })],
+  imports: [CacheModule.register({ ttl: 120 })],
   controllers: [AppController, CartController, ErrorHandlerController],
   providers: [AppService],
 })
