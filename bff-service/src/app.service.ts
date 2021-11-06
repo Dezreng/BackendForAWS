@@ -1,4 +1,10 @@
-import { Injectable, CACHE_MANAGER, Inject } from '@nestjs/common';
+import {
+  Injectable,
+  CACHE_MANAGER,
+  Inject,
+  HttpException,
+  HttpStatus,
+} from '@nestjs/common';
 import { AxiosResponse } from 'axios';
 import { requestToEb } from './libs/axios.requests';
 import { CreateItemDto } from './dto/create-item.dto';
@@ -30,6 +36,8 @@ export class AppService {
         console.log('Cashed!');
       }
       return res;
+    } else {
+      throw new HttpException(`Not recipient`, HttpStatus.NOT_FOUND);
     }
   }
 
@@ -37,6 +45,8 @@ export class AppService {
     const recipientURL = process.env[recipient];
     if (recipientURL) {
       return requestToEb(recipientURL, method);
+    } else {
+      throw new HttpException(`Not recipient`, HttpStatus.NOT_FOUND);
     }
   }
 }

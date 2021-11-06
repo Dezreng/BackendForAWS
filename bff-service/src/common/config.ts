@@ -7,6 +7,6 @@ dotenv.config({
 
 export const config = {
   PORT: process.env['PORT'],
-  PRODUCTS: process.env['PRODUCTS'],
-  CART: process.env['CART'],
+  PRODUCTS: process.env['products'],
+  CART: process.env['cart'],
 };

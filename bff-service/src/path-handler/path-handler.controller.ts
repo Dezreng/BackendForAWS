@@ -4,9 +4,6 @@ import { Controller, HttpException, HttpStatus, All } from '@nestjs/common';
 export class ErrorHandlerController {
   @All()
   getHandler(): string {
-    throw new HttpException(
-      'Cannot process request!',
-      HttpStatus.INTERNAL_SERVER_ERROR,
-    );
+    throw new HttpException('Cannot process request!', HttpStatus.BAD_GATEWAY);
   }
 }
